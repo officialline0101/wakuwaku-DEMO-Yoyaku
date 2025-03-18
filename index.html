@@ -1608,13 +1608,15 @@
                         continue;
                     }
 
-                    // 12:00～13:00の時間帯は予約不可
-                    if ((slotStart.getHours() === 18) || (slotStart.getHours() === 18 && slotStart.getMinutes() === 59) ||
-                        (slotStart.getHours() < 18 && slotEnd.getHours() >= 18)) {
-                        cell.textContent = '✕';
-                        cell.classList.add('unavailable');
-                        continue;
-                    }
+// 17:30～18:00 の時間帯をまたぐ予約は不可
+if (
+    (slotStart.getHours() === 17 && slotStart.getMinutes() >= 30) || // 17:30以降開始
+    (slotEnd.getHours() > 17 || (slotEnd.getHours() === 17 && slotEnd.getMinutes() > 30)) // 17:30以降に終了
+) {
+    cell.textContent = '✕';
+    cell.classList.add('unavailable');
+    continue;
+}
 
                     // ここで終了時間を使った条件処理を行う
                     // 例えば、リアルタイムで既に過ぎた時間帯は×にする
